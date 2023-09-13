@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <br>
+    <h1 style="text-align: center;">{{ habit.title }}</h1>
+    <div class="shadow-sm p-3 bg-white">
+        <ul>
+            <li>Автор: {{ habit.author }}</li>
+            <li>Дата начала привычки: {{ habit.created|date:"d E Y" }}</li>
+        </ul>
+    </div>
+
+    {% with card_header='Редактировать привычку' button='Сохранить' %}
+    <form method="post" action="{% url 'habits:habit-edit' habit.id %}">
+        {% include 'form.html' %}
+    {% endwith %}
+    </form>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 p-5">
+            <form method="POST" action="{% url 'habits:habit-delete' habit.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Удалить</button>
+            </form>
+    
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary"><a href="{% url 'habits:index' %}">На главную</a></button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

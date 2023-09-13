@@ -1,0 +1,76 @@
+<!--'index.html'-->
+<!DOCTYPE html>
+<html>
+  
+{% load static %}
+{% load user_filters %}
+
+<head>
+    <meta charset="utf-8">
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <!-- Список привычек -->
+
+    <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-8 p-5">
+            <div class="card">
+              <div class="card-header">
+                <h1 class="text-center">Habit Tracker</h1>
+                <h6 class="text-center">Дата: {{ habits.0.date }}</h6>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Привычка</th>
+                      <th>Выполнено сегодня</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for habit in habits %}
+                      <tr>
+                        <td><a href="{% url 'habits:habit-detail' habit.habit.id %}">{{ habit.habit.title  }}</a></td>
+                        <td>
+                          <form method="POST" action="{% url 'habits:complete-habit' habit.id %}">
+                            {% csrf_token %}
+                            {{ complete_form.as_p }}
+                            <button type="submit" class="btn">
+                              {% if habit.completed %}🟩{% else %}⬜️{% endif %}
+                            </button>
+                          </form>
+                        </td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td colspan="2">Нет привычек</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row justify-content-center">
+        <div class="col-md-8 p-5">     
+          <a href="{% url 'habits:daily-habits' date=current_date|previous_date %}">Предыдущий день</a><br>
+      
+          <a href="{% url 'habits:habit-chart' %}">График выполнения привычек</a>
+         </div>
+       </div>
+      
+  
+      
+
+ <!-- Форма для добавления привычки -->
+{% with card_header='Добавить новую привычку' button='Добавить' %}
+ {% include 'form.html' %}
+{% endwith %}
+
+</body>
+</html>
